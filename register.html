@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Floral Bagicha</title>
+    <link rel="stylesheet" href="P111.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .auth-form {
+            background: var(--container-color);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .auth-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--title-color);
+        }
+        .error-message {
+            color: #ff3860;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+        }
+        .auth-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--first-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-form">
+            <h2 class="auth-title">Register for Floral Bagicha</h2>
+            <div id="error-message" class="error-message"></div>
+            <form id="registerForm" onsubmit="return handleRegister(event)">
+                <div class="contact__content">
+                    <input type="text" id="name" placeholder=" " class="contact__input" required>
+                    <label class="contact__label">Full Name</label>
+                </div>
+                <div class="contact__content">
+                    <input type="email" id="email" placeholder=" " class="contact__input" required>
+                    <label class="contact__label">Email</label>
+                </div>
+                <div class="contact__content">
+                    <input type="password" id="password" placeholder=" " class="contact__input" required>
+                    <label class="contact__label">Password</label>
+                </div>
+                <div class="contact__content">
+                    <input type="password" id="confirm_password" placeholder=" " class="contact__input" required>
+                    <label class="contact__label">Confirm Password</label>
+                </div>
+                <button type="submit" class="button button--flex" style="margin: 1rem auto;">
+                    Register <i class="ri-arrow-right-line button__icon"></i>
+                </button>
+            </form>
+            <a href="login.html" class="auth-link">Already have an account? Login here</a>
+            <a href="P111.html" class="auth-link">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is already logged in
+        if(localStorage.getItem('user')) {
+            window.location.href = 'P111.html';
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+
+            // Simple validation
+            if (!name || !email || !password || !confirmPassword) {
+                showError('Please fill in all fields');
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return false;
+            }
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters long');
+                return false;
+            }
+
+            // In a real application, you would send this to a server
+            // For demo purposes, we'll just store in localStorage
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            // Check if email already exists
+            if (users.some(user => user.email === email)) {
+                showError('Email already registered');
+                return false;
+            }
+
+            // Add new user
+            users.push({
+                name,
+                email,
+                password // In a real app, never store passwords in localStorage
+            });
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Log the user in
+            localStorage.setItem('user', JSON.stringify({
+                name,
+                email
+            }));
+
+            // Redirect to home page
+            window.location.href = 'P111.html';
+            return false;
+        }
+
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
